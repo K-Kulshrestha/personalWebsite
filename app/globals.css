@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------
+   Tokens. Paper and cyan come straight from the hero SVG.
+   ------------------------------------------------------------------ */
+:root {
+  --paper: #f8f8f4;
+  --paper-2: #efeee6;
+  --ink: #151717;
+  --ink-soft: #454948;
+  --pencil: #6f736f;
+  --hat: #2ec4d6; /* fills, marks, scribbles */
+  --hat-deep: #0b7584; /* cyan text on paper (AA contrast) */
+  --sticky: #fbefa4;
+  --sticky-blue: #d9f3f6;
+  --marker: rgba(46, 196, 214, 0.3);
+
+  /* spacing scale (viewport-aware) */
+  --gutter: clamp(16px, 2.6vw, 44px);
+  --gap: clamp(10px, 1.6vw, 24px);
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------
+   The viewport is the canvas. The page itself never scrolls.
+   ------------------------------------------------------------------ */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Newsreader", Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--marker);
+}
+
+:focus-visible {
+  outline: 2px dashed var(--hat-deep);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@layer components {
+  /* small letter-spaced labels */
+  .label {
+    @apply font-mono uppercase;
+    font-size: clamp(10px, 0.72rem, 12px);
+    letter-spacing: 0.16em;
+  }
+
+  /* hand-drawn border: irregular radii read as a pen line */
+  .rough {
+    border: 1.5px solid var(--ink);
+    border-radius: 255px 14px 225px 12px / 12px 225px 14px 255px;
+  }
+  .rough-2 {
+    border: 1.5px solid var(--ink);
+    border-radius: 14px 225px 12px 255px / 255px 12px 225px 14px;
+  }
+  .rough-dashed {
+    border: 1.5px dashed var(--ink-soft);
+    border-radius: 225px 12px 255px 14px / 14px 255px 12px 225px;
+  }
+
+  /* highlighter stroke behind text */
+  .hl {
+    background-image: linear-gradient(
+      100deg,
+      transparent 0.2em,
+      var(--marker) 0.35em,
+      var(--marker) calc(100% - 0.4em),
+      transparent calc(100% - 0.2em)
+    );
+    background-size: 100% 0.55em;
+    background-position: 0 88%;
+    background-repeat: no-repeat;
+    padding: 0 0.1em;
+  }
+
+  .crossed {
+    text-decoration: line-through;
+    text-decoration-color: var(--ink);
+    text-decoration-thickness: 1.5px;
+    color: var(--pencil);
+  }
+
+  .paper-shadow {
+    box-shadow:
+      0 1px 0 rgba(21, 23, 23, 0.04),
+      0 10px 24px -14px rgba(21, 23, 23, 0.35);
+  }
+
+  /* faint notebook grid for panels (not behind the hero) */
+  .grid-paper {
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(rgba(21, 23, 23, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(21, 23, 23, 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* last-resort internal overflow, contained inside a panel and never the page */
+  .panel-scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--pencil) transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Motion: quick and quiet.
+   ------------------------------------------------------------------ */
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.view-in {
+  animation: view-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: var(--len, 400);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.draw {
+  stroke-dasharray: var(--len, 400);
+  animation: draw 520ms 120ms ease-out both;
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.drawer-in {
+  animation: drawer-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-in,
+  .draw,
+  .drawer-in {
+    animation: none !important;
+  }
+  .draw {
+    stroke-dasharray: none;
+  }
+  * {
+    transition-duration: 0ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Home composition. The stage is a size container: wide stages lay the
+   text over the art's empty corners; tall stages stack the pieces.
+   ------------------------------------------------------------------ */
+.stage {
+  container: stage / size;
+}
+.hero-box {
+  /* largest 3:2 box that fits the stage */
+  width: min(100cqw, 150cqh);
+  aspect-ratio: 3 / 2;
+  container: hero / inline-size;
+}
+.home-tall {
+  display: none;
+}
+@container stage (max-aspect-ratio: 6 / 5) {
+  .home-wide {
+    display: none;
+  }
+  .home-tall {
+    display: flex;
+  }
+}
+.hero-tagline,
+.hero-aside {
+  display: none;
+}
+@container hero (min-width: 720px) {
+  .hero-tagline {
+    display: block;
+  }
+}
+@container stage (min-aspect-ratio: 19 / 10) {
+  .hero-aside {
+    display: block;
+  }
+}
