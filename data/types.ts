@@ -54,9 +54,14 @@ export interface CaseStudy {
     needs: string[];
     constraints: string[];
   };
+  /** Optional line above the decisions (defaults to "the calls I made…"). Use it for team projects. */
+  thinkingNote?: string;
   thinking: Decision[];
   build: {
+    /** On team projects these are *my* contributions (labelled "My work" when `team` is set). */
     steps: Step[];
+    /** Team projects: what the wider team built, shown separately so ownership stays clear. */
+    team?: Step[];
     stack?: string[];
   };
   outcome: {
@@ -72,7 +77,7 @@ export interface CaseStudy {
   link?: { href: string; label: string };
 }
 
-export type ExperimentStatus = "shipped" | "prototype" | "research" | "in progress" | "open slot";
+export type ExperimentStatus = "shipped" | "capstone" | "prototype" | "research" | "in progress" | "open slot";
 
 export interface Experiment {
   id: string;

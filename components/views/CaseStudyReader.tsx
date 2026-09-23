@@ -168,7 +168,7 @@ function Metrics({ study, big }: { study: CaseStudy; big?: boolean }) {
     <ul className="grid grid-cols-3 gap-[clamp(10px,2vw,32px)]">
       {study.metrics.map((m, i) => (
         <li key={m.label} className="relative">
-          <p className="relative inline-block font-hand leading-none" style={{ fontSize: big ? "clamp(34px, 4.4vw, 72px)" : "clamp(28px, 3vw, 48px)" }}>
+          <p className="relative inline-block min-w-[1.4em] text-center font-hand leading-none" style={{ fontSize: big ? "clamp(34px, 4.4vw, 72px)" : "clamp(28px, 3vw, 48px)" }}>
             {m.value}
             {i === 0 && <Circle className="pointer-events-none absolute -inset-x-3 -inset-y-2 h-[calc(100%+16px)] w-[calc(100%+24px)] text-hat" animate />}
           </p>
@@ -241,7 +241,7 @@ function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
       return (
         <div className="grid h-full content-start gap-4">
           <p className="font-hand text-pencil" style={{ fontSize: "clamp(18px, 1.6vw, 24px)" }}>
-            the calls I made, and what I didn&apos;t do instead:
+            {study.thinkingNote ?? "the calls I made, and what I didn't do instead:"}
           </p>
           <ol className="grid gap-x-[clamp(20px,3vw,48px)] gap-y-[clamp(14px,3vh,30px)] md:grid-cols-2">
             {study.thinking.map((d, i) => (
@@ -270,6 +270,7 @@ function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
     case "build":
       return (
         <div className="grid h-full content-start gap-[clamp(16px,4vh,44px)]">
+          {study.build.team && <p className="label -mb-[clamp(8px,2.5vh,32px)] text-hat-deep">My work</p>}
           <ol className="grid gap-[clamp(10px,1.4vw,20px)] sm:grid-cols-2 lg:grid-flow-col lg:grid-cols-none lg:auto-cols-fr">
             {study.build.steps.map((s, i) => (
               <li key={s.title} className="relative">
@@ -288,6 +289,23 @@ function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
               </li>
             ))}
           </ol>
+          {study.build.team && (
+            <div className="rough-dashed px-4 pb-3 pt-2.5">
+              <p className="label text-hat-deep">
+                Team system <span className="ml-1 font-hand text-base normal-case tracking-normal text-pencil">what we built together</span>
+              </p>
+              <ul className="mt-2 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+                {study.build.team.map((t) => (
+                  <li key={t.title}>
+                    <span className="font-hand text-xl leading-none">{t.title}</span>
+                    <p className={body} style={{ fontSize: "clamp(13px, 0.95vw, 15px)" }}>
+                      {t.body}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {study.figures?.length ? (
             <div className="flex min-h-0 gap-4">
               {study.figures.map((f) => (
