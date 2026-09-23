@@ -21,6 +21,34 @@ export const caseStudies: CaseStudy[] = [
       { value: "3", label: "headline sponsors (JPMC, Palantir, CBRE)" },
     ],
     tags: ["0 → 1", "events as products", "sponsorships", "team of 22"],
+    visuals: {
+      build: {
+        figures: [
+          {
+            src: "/images/design-a-thon/sticky-notes-1600.webp",
+            thumb: "/images/design-a-thon/sticky-notes-800.webp",
+            width: 1600,
+            height: 1066,
+            alt: "Close-up of a participant writing ideas on pink sticky notes spread across a white table.",
+            caption: "Ideas going up on sticky notes during Design-a-thon '24.",
+          },
+        ],
+      },
+      outcome: {
+        figures: [
+          {
+            src: "/images/design-a-thon/team-1200.webp",
+            thumb: "/images/design-a-thon/team-600.webp",
+            width: 1200,
+            height: 1800,
+            crop: 4 / 5,
+            position: "center 62%",
+            alt: "Group photo at the Design-a-thon closing ceremony: the UX Club team holding a 'UXperience: The First Draft' sign and a phone mascot cutout, under 'UX UTD Designathon' balloons.",
+            caption: "The team at the closing ceremony · theme: “The First Draft.”",
+          },
+        ],
+      },
+    },
     overview: {
       context:
         "UX Club served 1,000+ members and worked with 50+ sponsors and partners. Its events were mostly talks and workshops. Hackathons existed, but they were built for engineers.",
@@ -249,6 +277,55 @@ export const caseStudies: CaseStudy[] = [
       { value: "end-to-end", label: "working full-stack product" },
     ],
     tags: ["AI", "team of 5", "product & UX", "full stack"],
+    visuals: {
+      overview: {
+        figures: [
+          {
+            src: "/images/elmo/landing-1600.webp",
+            thumb: "/images/elmo/landing-800.webp",
+            width: 1600,
+            height: 900,
+            alt: "ELMO landing screen: a large serif ELMO wordmark with the tagline 'Big stories. Little details.' beside a coral circle on warm grey.",
+            caption: "The landing page. Design system + branding were my part.",
+          },
+        ],
+      },
+      outcome: {
+        note: "Prototype screens · 2025 capstone build · no longer live",
+        figures: [
+          {
+            src: "/images/elmo/explore-1145.webp",
+            thumb: "/images/elmo/explore-480.webp",
+            width: 1145,
+            height: 2000,
+            crop: 3 / 4,
+            position: "top",
+            alt: "ELMO Explore screen: a sidebar (Home, Explore, Ask ELMO, Saved, Settings, Recent Reads) beside a list of topics such as Breaking News, Technology, Science & Health and Travel.",
+            caption: "1 · topics",
+          },
+          {
+            src: "/images/elmo/topic-feed-1145.webp",
+            thumb: "/images/elmo/topic-feed-480.webp",
+            width: 1145,
+            height: 2000,
+            crop: 3 / 4,
+            position: "top",
+            alt: "ELMO topic feed for Breaking News & Current Events: a two-column grid of story cards with photos and headlines.",
+            caption: "2 · stories",
+          },
+          {
+            src: "/images/elmo/article-1145.webp",
+            thumb: "/images/elmo/article-480.webp",
+            width: 1145,
+            height: 2000,
+            crop: 3 / 4,
+            position: "center 38%",
+            alt: "ELMO article view: headline and photo, then three reading modes (Brief, Standard, Deep Dive), the article text, and a Sources list at the bottom.",
+            caption: "3 · reading modes + sources",
+          },
+        ],
+      },
+    },
     overview: {
       context:
         "My senior CS capstone at UT Dallas. ELMO (Evolving Learning Media Outlet) brought multi-source news, retrieval, AI synthesis, sign-in and personalization into one app.",

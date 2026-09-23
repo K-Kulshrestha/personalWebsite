@@ -6,6 +6,7 @@ import { profile } from "@/data/profile";
 import type { Experiment } from "@/data/types";
 import type { Navigate } from "../Notebook";
 import { Arrow, Squiggle, Tape, Underline } from "../sketch/Scribbles";
+import { ExtLinks, Print } from "../Evidence";
 
 const tone: Record<Experiment["color"], string> = {
   sticky: "bg-sticky",
@@ -243,6 +244,7 @@ function Drawer({ e, onClose, navigate }: { e: Experiment; onClose: () => void; 
         <p className="mt-4 font-serif text-xl leading-snug">{e.what}</p>
 
         <div className="panel-scroll mt-4 min-h-0 flex-1">
+          {e.figure && <Print figure={e.figure} height="clamp(120px, 22vh, 200px)" tilt={-0.8} className="mb-5 mt-2" />}
           {e.details.length > 0 && (
             <ul className="space-y-2">
               {e.details.map((d) => (
@@ -270,11 +272,7 @@ function Drawer({ e, onClose, navigate }: { e: Experiment; onClose: () => void; 
               read the case study <Arrow className="h-4 w-6" />
             </button>
           )}
-          {e.link && (
-            <a href={e.link.href} target="_blank" rel="noreferrer" className="rough px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] hover:bg-sticky-blue">
-              {e.link.label} ↗
-            </a>
-          )}
+          {e.links && <ExtLinks links={e.links} />}
           {e.status === "open slot" && (
             <a
               href={`mailto:${profile.email}?subject=${encodeURIComponent("Something that should exist")}`}

@@ -1,4 +1,15 @@
+import type { Figure } from "./types";
+
 export const about = {
+  /** The one real-world photo on About. Keep the room in frame; the audience is the point. */
+  photo: {
+    src: "/images/about/design-a-thon-kickoff-1600.webp",
+    thumb: "/images/about/design-a-thon-kickoff-800.webp",
+    width: 1600,
+    height: 1060,
+    alt: "Kshitij speaking into a microphone at the front of a lecture hall full of students at Design-a-thon '24, with the event's Discord QR code on three screens.",
+    caption: "Design-a-thon '24: kicking off the 24-hour design competition I helped bring to life with UX Club.",
+  } satisfies Figure,
   hello: "Hi, I'm Kshitij.",
   paragraphs: [
     "I studied computer science, but my favorite part has always been the work before and after the code: figuring out what's actually wrong, and checking whether what we built fixed it.",

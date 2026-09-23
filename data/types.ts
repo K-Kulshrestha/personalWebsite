@@ -21,11 +21,38 @@ export interface Decision {
   why: string;
 }
 
-/** Optional image/screenshot slot. Put files in /public and reference them as "/file.png". */
+/**
+ * A real image used as evidence (photo, screenshot, poster). Files live in /public/images.
+ * Shown as a small taped print; clicking opens the full image in a lightbox.
+ */
 export interface Figure {
+  /** Full-size image, used in the lightbox, e.g. "/images/elmo/explore-1145.webp". */
   src: string;
+  /** Smaller version for the inline print. Falls back to `src`. */
+  thumb?: string;
+  /** Intrinsic size of `src`: reserves space so nothing shifts while loading. */
+  width: number;
+  height: number;
   alt: string;
+  /** Short visible caption in the handwritten voice. */
   caption?: string;
+  /** Crop the inline print to this aspect ratio (w/h), e.g. 3/4 for tall screenshots. */
+  crop?: number;
+  /** CSS object-position for that crop, e.g. "top". */
+  position?: string;
+}
+
+/** An optional "rabbit hole" link to real work elsewhere. Opens in a new tab. */
+export interface ExtLink {
+  href: string;
+  /** e.g. "GitHub", "Visit live site". The ↗ is added for you. */
+  label: string;
+}
+
+/** Evidence placed inside a case-study state, with an optional small note above it. */
+export interface Visuals {
+  figures: Figure[];
+  note?: string;
 }
 
 export interface CaseStudy {
@@ -73,7 +100,8 @@ export interface CaseStudy {
     lessons: string[];
     differently: string;
   };
-  figures?: Figure[];
+  /** Real images, placed where they support the story (not a gallery). */
+  visuals?: Partial<Record<"overview" | "build" | "outcome", Visuals>>;
   link?: { href: string; label: string };
 }
 
@@ -91,7 +119,9 @@ export interface Experiment {
   metric?: string;
   /** Links to a case study slug instead of opening the detail drawer. */
   caseStudy?: string;
-  link?: { href: string; label: string };
+  /** Optional image shown in the detail drawer. */
+  figure?: Figure;
+  links?: ExtLink[];
   color: "paper" | "sticky" | "blue" | "white";
 }
 
@@ -114,4 +144,5 @@ export interface Role {
   learned: string;
   people: string;
   caseStudy?: string;
+  links?: ExtLink[];
 }

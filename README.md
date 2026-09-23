@@ -22,7 +22,9 @@ All copy lives in `/data`. Components only handle presentation.
 | `data/experience.ts` | roles on the Experience timeline |
 | `data/about.ts` | About page text, beliefs, sticky notes |
 
-- **Add a case study:** push another object onto `caseStudies`. It shows up on the Work contents page and gets its own six-state reader. Optional `figures` (images in `/public`) render in the Build state, and `link` is also optional.
+- **Add a case study:** push another object onto `caseStudies`. It shows up on the Work contents page and gets its own six-state reader.
+- **Add real images (evidence, not decoration):** put optimized files in `public/images/…` (a small `thumb` plus a larger `src`, both WebP) and describe them as a `Figure` with `width`, `height`, `alt` and a short `caption`. Case studies place them per state with `visuals.overview` / `visuals.build` / `visuals.outcome`. Lab entries take one `figure`, and About has `about.photo`. Each image renders as a taped print (`components/Evidence.tsx`), and clicking opens a lightbox.
+- **Add links:** `links: [{ href, label }]` on a Lab entry or Experience role renders small outlined chips that open in a new tab (the ↗ is added for you).
 - **Add an experiment:** push onto `experiments`. The board places it automatically. Set `caseStudy` to link it to a case study.
 - **Add a role:** add it to `roles` with decimal `start`/`end` years, and the timeline places it.
 
