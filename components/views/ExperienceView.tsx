@@ -6,6 +6,7 @@ import type { Role } from "@/data/types";
 import type { Navigate } from "../Notebook";
 import { Arrow, Underline } from "../sketch/Scribbles";
 import { StickyNote } from "../sketch/StickyNote";
+import { ExtLinks } from "../Evidence";
 
 // Timeline bounds (decimal years). "Now" is marked so the future reads as future.
 const FROM = 2022.5;
@@ -144,6 +145,7 @@ export function ExperienceView({ navigate }: { navigate: Navigate }) {
                   the full story <Arrow className="h-4 w-6" />
                 </button>
               )}
+              {r.links && <ExtLinks links={r.links} />}
               <span className="font-mono text-xs text-pencil">
                 {sel + 1}/{roles.length}
                 <button onClick={() => setSel((s) => Math.max(0, s - 1))} disabled={sel === 0} className="ml-3 disabled:opacity-30" aria-label="Previous role">

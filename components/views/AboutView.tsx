@@ -5,6 +5,7 @@ import { about } from "@/data/about";
 import { profile } from "@/data/profile";
 import { Arrow, Star, Underline } from "../sketch/Scribbles";
 import { StickyNote } from "../sketch/StickyNote";
+import { Print } from "../Evidence";
 
 function Hello() {
   return (
@@ -94,9 +95,9 @@ export function AboutView() {
           <Beliefs />
         </div>
 
-        <div className="flex min-h-0 flex-col justify-center gap-[clamp(20px,7vh,72px)]">
+        <div className="flex min-h-0 flex-col justify-center gap-[clamp(16px,4.5vh,56px)]">
           <div className="grid gap-[clamp(12px,2.6vh,26px)]">
-            {about.notes.map((n, i) => (
+            {about.notes.slice(0, 2).map((n, i) => (
               <StickyNote
                 key={n.label}
                 tone={i === 1 ? "blue" : i === 2 ? "white" : "sticky"}
@@ -110,6 +111,18 @@ export function AboutView() {
                 </p>
               </StickyNote>
             ))}
+            {/* the real-world photo, with the last note clipped to its corner (over the ceiling, not the crowd) */}
+            <div className="relative mt-1 pr-[14%]">
+              <Print figure={about.photo} height="min(clamp(130px, 27vh, 300px), 22vw)" tilt={-1} tape={false} />
+              <div className="absolute -top-4 right-0 w-[40%]">
+                <StickyNote tone="white" tilt={3} className="px-3 pb-2.5 pt-3.5">
+                  <p className="label text-ink-soft">{about.notes[2].label}</p>
+                  <p className="mt-0.5 font-hand leading-[1.05]" style={{ fontSize: "clamp(17px, 1.4vw, 22px)" }}>
+                    {about.notes[2].text}
+                  </p>
+                </StickyNote>
+              </div>
+            </div>
           </div>
           <SayHi />
         </div>
@@ -131,7 +144,12 @@ export function AboutView() {
           ))}
         </div>
         <div key={tab} className="view-in panel-scroll mt-4 min-h-0 flex-1">
-          {tab === "me" && <Hello />}
+          {tab === "me" && (
+            <>
+              <Hello />
+              <Print figure={about.photo} height="auto" tape={false} className="mt-5" />
+            </>
+          )}
           {tab === "beliefs" && (
             <div className="space-y-6">
               <Beliefs />

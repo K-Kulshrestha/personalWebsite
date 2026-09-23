@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import { caseStudies } from "@/data/caseStudies";
-import type { CaseStudy } from "@/data/types";
+import type { CaseStudy, Visuals } from "@/data/types";
 import { sectionIds, type SectionId } from "@/lib/route";
 import type { Navigate } from "../Notebook";
 import { Arrow, Circle, Star, Underline } from "../sketch/Scribbles";
 import { StickyNote } from "../sketch/StickyNote";
+import { Print } from "../Evidence";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -179,14 +180,31 @@ function Metrics({ study, big }: { study: CaseStudy; big?: boolean }) {
   );
 }
 
+/** A few real images supporting the current state, with an optional small note. */
+function Evidence({ v, height }: { v: Visuals; height: string }) {
+  return (
+    <div className="min-w-0">
+      {v.note && <p className="label mb-2 text-pencil">{v.note}</p>}
+      <div className="flex flex-wrap items-start gap-x-[clamp(12px,1.6vw,22px)] gap-y-4">
+        {v.figures.map((f, i) => (
+          <Print key={f.src} figure={f} height={height} tilt={[-1.2, 0.8, -0.5][i % 3]} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
   switch (section) {
     case "overview":
       return (
         <div className="grid h-full content-start gap-[clamp(16px,3.5vh,40px)]">
-          <p className="max-w-[46ch] font-serif italic leading-snug" style={lead}>
-            {study.hook}
-          </p>
+          <div className="grid items-start gap-x-10 gap-y-5 lg:grid-cols-[minmax(0,1fr)_auto]">
+            <p className="max-w-[46ch] font-serif italic leading-snug" style={lead}>
+              {study.hook}
+            </p>
+            {study.visuals?.overview && <Evidence v={study.visuals.overview} height="clamp(110px, 20vh, 220px)" />}
+          </div>
           <div className="grid gap-[clamp(14px,2vw,32px)] md:grid-cols-3">
             <Note label="Context">{study.overview.context}</Note>
             <Note label="What I owned">
@@ -306,17 +324,7 @@ function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
               </ul>
             </div>
           )}
-          {study.figures?.length ? (
-            <div className="flex min-h-0 gap-4">
-              {study.figures.map((f) => (
-                <figure key={f.src} className="min-w-0 flex-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={f.src} alt={f.alt} className="rough max-h-[30vh] w-full object-contain" />
-                  {f.caption && <figcaption className="mt-1 font-hand text-lg text-pencil">{f.caption}</figcaption>}
-                </figure>
-              ))}
-            </div>
-          ) : null}
+          {study.visuals?.build && <Evidence v={study.visuals.build} height="clamp(110px, 22vh, 240px)" />}
           {study.build.stack && (
             <p className="font-mono text-xs leading-relaxed text-pencil">
               <span className="mr-2 font-hand text-lg text-ink-soft">built with:</span>
@@ -342,11 +350,16 @@ function Section({ study, section }: { study: CaseStudy; section: SectionId }) {
                 </li>
               ))}
             </ul>
-            {study.outcome.alsoShipped && (
-              <StickyNote tone="blue" tilt={1} className="px-5 pb-4 pt-5">
-                <p className="label text-ink-soft">also shipped</p>
-                <p className="mt-1 font-serif text-[15px] leading-snug">{study.outcome.alsoShipped}</p>
-              </StickyNote>
+            {(study.outcome.alsoShipped || study.visuals?.outcome) && (
+              <div className="grid content-start gap-5">
+                {study.outcome.alsoShipped && (
+                  <StickyNote tone="blue" tilt={1} className="px-5 pb-4 pt-5">
+                    <p className="label text-ink-soft">also shipped</p>
+                    <p className="mt-1 font-serif text-[15px] leading-snug">{study.outcome.alsoShipped}</p>
+                  </StickyNote>
+                )}
+                {study.visuals?.outcome && <Evidence v={study.visuals.outcome} height="clamp(100px, 18vh, 240px)" />}
+              </div>
             )}
           </div>
         </div>

@@ -37,6 +37,7 @@ export const roles: Role[] = [
     learned: "With volunteers, the plan has to be good enough that people want to follow it.",
     people: "1,000+ members, 50+ sponsors and partners.",
     caseStudy: "design-a-thon",
+    links: [{ href: "https://www.uxutd.com/", label: "uxutd.com" }],
   },
   {
     id: "rex",
