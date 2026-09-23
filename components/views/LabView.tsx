@@ -65,6 +65,20 @@ export function LabView({ navigate }: { navigate: Navigate }) {
   const opened = experiments.find((e) => e.id === openId) ?? null;
   const close = useCallback(() => setOpenId(null), []);
 
+  // Mobile deck: whichever note is nearest the center is the focused one.
+  const deck = useRef<HTMLUListElement>(null);
+  const [active, setActive] = useState(0);
+  const onDeckScroll = () => {
+    const ul = deck.current;
+    if (!ul) return;
+    // li.offsetLeft is measured from the list (it's `relative`), in scroll coordinates
+    const mid = ul.scrollLeft + ul.clientWidth / 2;
+    const dist = (el: Element) => Math.abs((el as HTMLElement).offsetLeft + (el as HTMLElement).offsetWidth / 2 - mid);
+    const items = Array.from(ul.children);
+    const best = items.reduce((b, el, i) => (dist(el) < dist(items[b]) ? i : b), 0);
+    if (best !== active) setActive(best);
+  };
+
   const onDown = (e: RPointerEvent<HTMLButtonElement>, id: string) => {
     if (e.button !== 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -97,7 +111,7 @@ export function LabView({ navigate }: { navigate: Navigate }) {
   };
 
   return (
-    <div className="grid h-full w-full grid-rows-[auto_minmax(0,1fr)] px-[var(--gutter)] pb-3 pt-[clamp(14px,3vh,36px)]">
+    <div className="grid h-full w-full grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)] px-[var(--gutter)] pb-3 pt-[clamp(14px,3vh,36px)]">
       <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
         <div>
           <p className="label text-pencil">03 / Lab</p>
@@ -153,25 +167,44 @@ export function LabView({ navigate }: { navigate: Navigate }) {
         })}
       </div>
 
-      {/* mobile: the same notes, one swipe at a time */}
+      {/* mobile: the same notes as a swipeable deck, one focused card at a time */}
       <div className="flex min-h-0 flex-col md:hidden short:flex">
         <p className="mt-1 font-hand text-lg text-pencil">swipe → tap one to read it</p>
-        <ul className="no-scrollbar -mx-[var(--gutter)] flex min-h-0 flex-1 snap-x snap-mandatory items-center gap-4 overflow-x-auto px-[var(--gutter)] py-4">
+        {/* --card sets the focused note's width; --deck-gap leaves just a sliver of the next note visible.
+            The ::before/::after spacers let the first and last notes snap to center. */}
+        <ul
+          ref={deck}
+          onScroll={onDeckScroll}
+          aria-label="Experiments"
+          className="no-scrollbar relative -mx-[var(--gutter)] flex min-h-0 flex-1 snap-x snap-mandatory items-center gap-[var(--deck-gap)] overflow-x-auto overscroll-x-contain py-4 short:py-2 [--card:min(74vw,300px)] [--deck-gap:clamp(12px,4vw,20px)] before:w-[calc(50%-var(--card)/2-var(--deck-gap))] before:shrink-0 before:content-[''] after:w-[calc(50%-var(--card)/2-var(--deck-gap))] after:shrink-0 after:content-['']"
+        >
           {experiments.map((e, i) => (
-            <li key={e.id} className="snap-center">
+            <li key={e.id} className="w-[var(--card)] shrink-0 snap-center snap-always">
               <button
                 onClick={() => setOpenId(e.id)}
-                className={`paper-shadow relative w-[68vw] max-w-[280px] px-5 pb-5 pt-5 text-left ${tone[e.color]} ${
+                aria-haspopup="dialog"
+                aria-label={`${e.name}: ${e.what}`}
+                className={`paper-shadow relative w-full px-5 pb-5 pt-5 text-left transition-[transform,opacity] duration-200 ${tone[e.color]} ${
                   e.status === "open slot" ? "rough-dashed !bg-transparent shadow-none" : ""
-                }`}
-                style={{ transform: `rotate(${slot(i, experiments.length).rot}deg)` }}
+                } ${i === active ? "" : "opacity-60"}`}
+                style={{ transform: `rotate(${slot(i, experiments.length).rot}deg) scale(${i === active ? 1 : 0.92})` }}
               >
                 <NoteFace e={e} />
-                <p className="mt-3 font-serif text-[15px] leading-snug">{e.what}</p>
+                <p className="mt-3 font-serif text-[15px] leading-snug short:hidden">{e.what}</p>
               </button>
             </li>
           ))}
         </ul>
+        <div className="flex items-center justify-center gap-3 pt-1" aria-hidden>
+          <span className="font-mono text-[11px] text-pencil">
+            {String(active + 1).padStart(2, "0")} / {String(experiments.length).padStart(2, "0")}
+          </span>
+          <span className="flex gap-1.5">
+            {experiments.map((e, i) => (
+              <span key={e.id} className={`h-1.5 rounded-full transition-all ${i === active ? "w-4 bg-hat" : "w-1.5 bg-[rgba(21,23,23,0.25)]"}`} />
+            ))}
+          </span>
+        </div>
       </div>
 
       {opened && <Drawer e={opened} onClose={close} navigate={navigate} />}
