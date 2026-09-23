@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { caseStudies, getCaseStudy } from "@/data/caseStudies";
 import type { Route } from "@/lib/route";
 import type { Navigate } from "../Notebook";
@@ -26,7 +26,7 @@ function WorkIndex({ navigate }: { navigate: Navigate }) {
   const open = (slug: string) => navigate({ view: "work", study: slug, section: "overview" });
 
   return (
-    <div className="grid h-full w-full grid-rows-[auto_1fr] gap-[var(--gap)] px-[var(--gutter)] pb-3 pt-[clamp(14px,3vh,36px)] md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:grid-rows-[auto_1fr] md:gap-x-[clamp(24px,4vw,72px)] short:grid-cols-1 short:pt-2">
+    <div className="grid h-full w-full grid-rows-[auto_1fr] gap-[var(--gap)] px-[var(--gutter)] pb-1 pt-[clamp(14px,3vh,36px)] md:pb-3 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:grid-rows-[auto_1fr] md:gap-x-[clamp(24px,4vw,72px)] short:grid-cols-1 short:pt-2">
       <header className="md:col-span-2">
         <p className="label text-pencil">02 / Work</p>
         <h2 className="mt-1 flex flex-wrap items-baseline gap-x-3 font-serif leading-none" style={{ fontSize: "clamp(28px, 4.2vw, 60px)" }}>
@@ -40,24 +40,38 @@ function WorkIndex({ navigate }: { navigate: Navigate }) {
         </h2>
       </header>
 
-      <ol className="flex min-h-0 flex-col justify-center" aria-label="Case studies">
+      <ol className="no-scrollbar flex min-h-0 flex-col justify-start overflow-y-auto pt-[clamp(2px,1.5dvh,14px)] md:justify-center md:overflow-visible md:pt-0" aria-label="Case studies">
         {caseStudies.map((c, i) => {
           const on = i === focus;
           return (
-            <li key={c.slug} className="border-t-[1.5px] border-ink/80 last:border-b-[1.5px]">
+            <li key={c.slug} className="flex max-h-[clamp(84px,15dvh,132px)] min-h-fit grow border-t-[1.5px] border-ink/80 last:border-b-[1.5px] [&:nth-last-child(2)]:border-b-[1.5px] md:block md:max-h-none md:grow-0 md:[&:nth-last-child(2)]:border-b-0">
               <button
                 onClick={() => open(c.slug)}
                 onMouseEnter={() => setFocus(i)}
                 onFocus={() => setFocus(i)}
-                className="group grid w-full grid-cols-[auto_1fr_auto] items-center gap-x-[clamp(10px,1.6vw,24px)] py-[clamp(8px,2.1vh,22px)] text-left"
+                className="group grid w-full grid-cols-[auto_1fr_auto] content-center items-baseline gap-x-[clamp(10px,1.6vw,24px)] py-[clamp(8px,1.8dvh,18px)] text-left md:items-center md:py-[clamp(8px,2.1vh,22px)]"
               >
                 <span className={`font-mono text-sm ${on ? "text-hat-deep" : "text-pencil"}`}>{pad(i + 1)}</span>
                 <span className="min-w-0">
                   <span className="relative inline-block font-serif leading-[1.05]" style={{ fontSize: "clamp(20px, 2.35vw, 36px)" }}>
                     <span className={on ? "hl" : ""}>{c.label}</span>
                   </span>
-                  <span className="label mt-1 block truncate text-pencil">
-                    {c.org} · {c.role} · {c.when}
+                  <span className="label mt-1 block leading-snug tracking-[0.1em] text-pencil md:truncate md:leading-[inherit] md:tracking-[0.16em]">
+                    {/* phones: each piece stays whole and lines wrap only between pieces */}
+                    <span className="md:hidden">
+                      {metaParts(c).map((t, j, all) => (
+                        <Fragment key={t}>
+                          <span className="whitespace-nowrap">
+                            {t}
+                            {j < all.length - 1 && " ·"}
+                          </span>
+                          {j < all.length - 1 && " "}
+                        </Fragment>
+                      ))}
+                    </span>
+                    <span className="hidden md:inline">
+                      {c.org} · {c.role} · {c.when}
+                    </span>
                   </span>
                 </span>
                 <span className="relative hidden shrink-0 px-3 py-1 text-right sm:block">
@@ -70,7 +84,7 @@ function WorkIndex({ navigate }: { navigate: Navigate }) {
             </li>
           );
         })}
-        <li className="mt-3 font-hand text-lg text-pencil md:hidden short:hidden">tap one to open it →</li>
+        <li className="shrink-0 pt-[clamp(6px,1.5dvh,12px)] font-hand text-lg text-pencil md:hidden short:hidden">tap one to open it →</li>
       </ol>
 
       {/* preview: only where there's room for it */}
@@ -112,3 +126,4 @@ function WorkIndex({ navigate }: { navigate: Navigate }) {
 }
 
 const tagLine = (tags: string[]) => tags.slice(0, 2).join(" · ");
+const metaParts = (c: { org: string; role: string; when: string }) => [c.org, ...c.role.split(" · "), c.when];
