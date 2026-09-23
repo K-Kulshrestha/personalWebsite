@@ -201,7 +201,7 @@ export function LabView({ navigate }: { navigate: Navigate }) {
           </span>
           <span className="flex gap-1.5">
             {experiments.map((e, i) => (
-              <span key={e.id} className={`h-1.5 rounded-full transition-all ${i === active ? "w-4 bg-hat" : "w-1.5 bg-[rgba(21,23,23,0.25)]"}`} />
+              <span key={e.id} className={`h-1.5 rounded-full transition-all ${i === active ? "w-4 bg-hat" : "w-1.5 bg-ink/25"}`} />
             ))}
           </span>
         </div>

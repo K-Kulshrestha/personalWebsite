@@ -6,16 +6,18 @@
    Tokens. Paper and cyan come straight from the hero SVG.
    ------------------------------------------------------------------ */
 :root {
-  --paper: #f8f8f4;
-  --paper-2: #efeee6;
-  --ink: #151717;
-  --ink-soft: #454948;
-  --pencil: #6f736f;
-  --hat: #2ec4d6; /* fills, marks, scribbles */
-  --hat-deep: #0b7584; /* cyan text on paper (AA contrast) */
-  --sticky: #fbefa4;
-  --sticky-blue: #d9f3f6;
-  --marker: rgba(46, 196, 214, 0.3);
+  /* Colors are stored as bare RGB channels so Tailwind's opacity modifiers
+     (e.g. border-ink/40) work. In plain CSS use rgb(var(--ink)) or rgb(var(--ink) / 0.3). */
+  --paper: 248 248 244; /* #f8f8f4 */
+  --paper-2: 239 238 230; /* #efeee6 */
+  --ink: 21 23 23; /* #151717 */
+  --ink-soft: 69 73 72; /* #454948 */
+  --pencil: 111 115 111; /* #6f736f */
+  --hat: 46 196 214; /* #2ec4d6: fills, marks, scribbles */
+  --hat-deep: 11 117 132; /* #0b7584: cyan text on paper (AA contrast) */
+  --sticky: 251 239 164; /* #fbefa4 */
+  --sticky-blue: 217 243 246; /* #d9f3f6 */
+  --marker: rgb(var(--hat) / 0.3);
 
   /* spacing scale (viewport-aware) */
   --gutter: clamp(16px, 2.6vw, 44px);
@@ -36,8 +38,8 @@ body {
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
+  background: rgb(var(--paper));
+  color: rgb(var(--ink));
   font-family: "Newsreader", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -48,7 +50,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px dashed var(--hat-deep);
+  outline: 2px dashed rgb(var(--hat-deep));
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -63,15 +65,15 @@ body {
 
   /* hand-drawn border: irregular radii read as a pen line */
   .rough {
-    border: 1.5px solid var(--ink);
+    border: 1.5px solid rgb(var(--ink));
     border-radius: 255px 14px 225px 12px / 12px 225px 14px 255px;
   }
   .rough-2 {
-    border: 1.5px solid var(--ink);
+    border: 1.5px solid rgb(var(--ink));
     border-radius: 14px 225px 12px 255px / 255px 12px 225px 14px;
   }
   .rough-dashed {
-    border: 1.5px dashed var(--ink-soft);
+    border: 1.5px dashed rgb(var(--ink-soft));
     border-radius: 225px 12px 255px 14px / 14px 255px 12px 225px;
   }
 
@@ -92,23 +94,23 @@ body {
 
   .crossed {
     text-decoration: line-through;
-    text-decoration-color: var(--ink);
+    text-decoration-color: rgb(var(--ink));
     text-decoration-thickness: 1.5px;
-    color: var(--pencil);
+    color: rgb(var(--pencil));
   }
 
   .paper-shadow {
     box-shadow:
-      0 1px 0 rgba(21, 23, 23, 0.04),
-      0 10px 24px -14px rgba(21, 23, 23, 0.35);
+      0 1px 0 rgb(var(--ink) / 0.04),
+      0 10px 24px -14px rgb(var(--ink) / 0.35);
   }
 
   /* faint notebook grid for panels (not behind the hero) */
   .grid-paper {
-    background-color: var(--paper);
+    background-color: rgb(var(--paper));
     background-image:
-      linear-gradient(rgba(21, 23, 23, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(21, 23, 23, 0.05) 1px, transparent 1px);
+      linear-gradient(rgb(var(--ink) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--ink) / 0.05) 1px, transparent 1px);
     background-size: 22px 22px;
   }
 
@@ -117,7 +119,7 @@ body {
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: var(--pencil) transparent;
+    scrollbar-color: rgb(var(--pencil)) transparent;
   }
 
   .no-scrollbar {
